@@ -1,13 +1,13 @@
 {
-  "totalIncense": 1022,
-  "totalMerit": 13958,
-  "woodenFishHits": 9317,
-  "bellRings": 173,
-  "lanternCount": 287,
-  "fortuneCount": 219,
+  "totalIncense": 2015,
+  "totalMerit": 92029,
+  "woodenFishHits": 9493,
+  "bellRings": 255,
+  "lanternCount": 478,
+  "fortuneCount": 378,
   "activeIncenseSticks": 36,
   "offerings": {
-    "lotus": 102,
+    "lotus": 238,
     "fruit": 2,
     "lamp": 2,
     "dragon": 4
@@ -14453,10 +14453,64 @@
       "name": "Quỳnh_Finn",
       "uniqueId": "quỳnh_finn",
       "avatar": "",
-      "merit": 25,
-      "incense": 3,
-      "gifts": 0,
+      "merit": 39476,
+      "incense": 313,
+      "gifts": 63,
+      "lastWish": "Xin xăm Quẻ số 68 Đại Cát"
+    },
+    "ngocanh.98": {
+      "name": "Ngọc Anh Nguyễn",
+      "uniqueId": "ngocanh.98",
+      "avatar": "",
+      "merit": 4395,
+      "incense": 100,
+      "gifts": 8,
       "lastWish": "Xin xăm Quẻ số 1 Thượng Thượng Cát"
+    },
+    "hoangnam.dev": {
+      "name": "Lê Hoàng Nam",
+      "uniqueId": "hoangnam.dev",
+      "avatar": "",
+      "merit": 8110,
+      "incense": 157,
+      "gifts": 16,
+      "lastWish": "Xin xăm Quẻ số 99 Thượng Thượng Cát"
+    },
+    "ducthinh88": {
+      "name": "Vũ Đức Thịnh",
+      "uniqueId": "ducthinh88",
+      "avatar": "",
+      "merit": 6830,
+      "incense": 148,
+      "gifts": 13,
+      "lastWish": "Con xin gieo một quẻ cầu tài lộc đầu năm"
+    },
+    "minhquan_bds": {
+      "name": "Trần Minh Quân",
+      "uniqueId": "minhquan_bds",
+      "avatar": "",
+      "merit": 7230,
+      "incense": 146,
+      "gifts": 14,
+      "lastWish": "Cầu tháng mới công việc thuận buồm xuôi gió, tài lộc hanh thông"
+    },
+    "tam_an_99": {
+      "name": "Diệu Thảo Tâm An",
+      "uniqueId": "tam_an_99",
+      "avatar": "",
+      "merit": 7085,
+      "incense": 192,
+      "gifts": 13,
+      "lastWish": "Nam Mô A Di Đà Phật, nguyện cầu thế giới hòa bình chúng sinh an lạc"
+    },
+    "thanhha.lotus": {
+      "name": "Phạm Thanh Hà",
+      "uniqueId": "thanhha.lotus",
+      "avatar": "",
+      "merit": 4970,
+      "incense": 131,
+      "gifts": 9,
+      "lastWish": "Cầu gia đạo êm ấm, con cái ngoan ngoãn học giỏi"
     }
   },
   "settings": {
@@ -14465,7 +14519,7 @@
     "bgMusicEnabled": true,
     "sfxEnabled": true,
     "smokeDensity": 1,
-    "autoSim": false,
+    "autoSim": true,
     "autoSimIntervalMs": 9500,
     "musicVolume": 0.89,
     "ttsVolume": 0.86
