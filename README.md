@@ -3,7 +3,7 @@
 Hệ thống phát trực tiếp tương tác (**Interactive TikTok Live Stream & JSON-RPC 2.0**) chuẩn khung dọc **9:16 (`1080×1920`)** dành cho **OBS Studio / TikTok Live Studio**, chạy siêu nhẹ trên **Bun.js** và tích hợp giọng đọc AI tiếng Việt **ZeroTTS (`zeroweight-ai/ZeroTTS`)**.
 
 Người xem trên TikTok Live tương tác trực tiếp qua **Bình luận (Comment)**, **Thả tim (Like)**, **Chia sẻ / Follow** và **Tặng quà (Gift)** để thực hiện các nghi thức tâm linh trên màn hình Chánh Điện **Đức Phật A Di Đà**:
-- 🔥 **Thắp hương & Đảnh lễ Tam Bái (8-Frame Walking & Prostration)**: Nhân vật Phật tử mặc áo lam bước đi từng bước dọc thảm đỏ hoa sen lên trước Lư Hương Đỉnh Đồng, hạ gối quỳ và thực hiện 3 lạy Ngũ thể đầu địa hướng về Đức Phật A Di Đà.
+- 🔥 **Thắp hương & Đảnh lễ Tam Bái (Animated Spirit Characters)**: Ma chú tiểu và ma ni cô dạng minh họa phát sáng bước trên thảm đỏ hoa sen, quỳ rồi phủ phục sát đất thực hiện Tam Bái hướng về Đức Phật A Di Đà.
 - 🏮 **Thả Đèn Hoa Đăng / Sớ Cầu Nguyện**: Bình luận lời khấn sẽ bay lên thành Đèn Hoa Đăng kèm giọng đọc AI đọc lời cầu nguyện.
 - 🎋 **Xin Xăm / Gieo Quẻ Đầu Năm (Đồng bộ Giọng đọc & Tờ Giải Quẻ)**: Tự động lắc ống xăm và mở tờ Giải Quẻ (Thượng Thượng Cát, Đại Cát, Thượng Cát...) đúng thời điểm giọng đọc bắt đầu vang lên.
 - 🪵 **Gõ Mõ & 🔔 Thỉnh Đại Hồng Chung**: Thả tim gõ mõ tích điểm Công Đức, chia sẻ/follow thỉnh chuông đồng lan tỏa sóng âm vàng và kích hoạt làn sóng vái lạy của 40+ Phật tử trong Đạo Tràng.
@@ -32,8 +32,8 @@ Người xem trên TikTok Live tương tác trực tiếp qua **Bình luận (Co
 - **Canvas Particle Engine (`public/js/particles.js`)**:
   - Khóa tốc độ vẽ ở **30 FPS** ổn định, tự động tạm dừng khi ẩn tab (`document.hidden`).
   - Pre-render toàn bộ Khói hương, Hạt vàng và Cánh hoa sen ra Offscreen Canvas 1 lần duy nhất lúc khởi tạo (`drawImage`), không gọi `createRadialGradient` hay `shadowBlur` trong vòng lặp frame.
-- **Zero-Flicker 8-Frame Sprite Stack (`public/js/live.js` & `public/css/live.css`)**:
-  - Nạp sẵn cả 8 khung hình chuyển động (`walk1`, `walk2`, `kneelDown`, `kneel`, `forehead`, `bowMid`, `prostrate`, `prostrateDeep`) vào GPU với bóng đổ (drop-shadow) đã bake sẵn trong PNG, loại bỏ hoàn toàn hiện tượng nháy/mất hình khi chuyển tư thế.
+- **Nhân vật ma tu hành dạng SVG (`public/js/live.js` & `public/css/live.css`)**:
+  - Minh họa ma chú tiểu và ma ni cô bằng nét viền phát sáng, áo choàng và chuyển sắc; nhân vật đi bộ, quỳ, cúi đầu chạm đất và phủ phục với tay đặt hai bên đầu, không cần tải mô hình hoặc thư viện đồ họa bên ngoài.
 - **ZeroTTS Worker (`tts_worker.py`)**:
   - Tiến trình Python thường trú nạp sẵn model `zeroweight-ai/ZeroTTS` (`intra_op_num_threads=3`, `OMP_WAIT_POLICY=PASSIVE` → **`0.0% CPU` khi chờ**).
   - Tổng hợp nguyên câu trong 1 lần gọi (`single-pass synthesis`), khử DC offset, chuẩn hóa đỉnh âm lượng (`peak <= 0.90`) và làm mượt 2 đầu sóng âm (`cosine fade-in/out`) chống xước/rè tiếng.
@@ -56,7 +56,7 @@ bun install
 
 # Tạo môi trường Python .venv và cài đặt ZeroTTS
 uv venv .venv
-uv pip install --python .venv/bin/python zerotts pillow
+uv pip install --python .venv/bin/python numpy zerotts pillow
 ```
 
 ### 3. Khởi chạy Server
@@ -65,6 +65,8 @@ bun start
 # Hoặc chế độ tự động reload khi sửa code:
 bun run dev
 ```
+
+Server mặc định chỉ lắng nghe trên `127.0.0.1` và không tự kết nối tài khoản TikTok mẫu. Để tự kết nối một kênh khi khởi động, đặt `TIKTOK_USER=@username`. Nếu cần truy cập server từ container hoặc thiết bị khác, đặt `HOST=0.0.0.0`; chỉ mở cổng sau reverse proxy có xác thực. Để cho phép trình duyệt từ origin khác gọi API, khai báo danh sách phân tách bằng dấu phẩy trong `CORS_ORIGINS` (ví dụ `CORS_ORIGINS=https://dashboard.example.com`). CORS không thay thế xác thực.
 
 Mặc định server chạy tại cổng `3000`:
 - **Màn hình Live + Điều khiển nhanh**: [http://localhost:3000](http://localhost:3000)

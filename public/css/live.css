@@ -214,6 +214,35 @@ body.obs-mode .stage-wrapper {
   opacity: 1;
 }
 
+.lotus-hand-halo.offering {
+  opacity: 1;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 220, 0.96) 0%,
+    rgba(255, 211, 92, 0.62) 35%,
+    rgba(255, 165, 30, 0) 78%
+  );
+}
+
+.lotus-hand-halo.offering::before {
+  content: '🪷';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: #fff2aa;
+  font-size: 58px;
+  line-height: 1;
+  text-shadow: 0 0 12px #fff3b0, 0 0 28px #ffbd3e;
+  transform: translate(-50%, -50%);
+  animation: lotus-offering-bloom 850ms ease-out 4 both;
+}
+
+@keyframes lotus-offering-bloom {
+  0% { opacity: 0; scale: 0.35; rotate: -18deg; }
+  35% { opacity: 1; scale: 1.2; rotate: 8deg; }
+  75%, 100% { opacity: 0; scale: 1.65; rotate: 22deg; }
+}
+
 /* 2. THANH TRẠNG THÁI MỎNG TRÊN ĐỈNH (KHÔNG DÙNG BACKDROP-FILTER) */
 .minimal-top-bar {
   position: absolute;
@@ -365,6 +394,76 @@ body.obs-mode .stage-wrapper {
   font-size: 14px;
   font-weight: 700;
 }
+
+.ritual-hotspot::before,
+.ritual-hotspot::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2px solid currentColor;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ritual-hotspot.is-striking {
+  border-color: #ffcf5c;
+  box-shadow: 0 0 18px rgba(255, 190, 55, 0.9), inset 0 0 10px rgba(255, 190, 55, 0.3);
+}
+
+.woodfish-hotspot.is-striking::before,
+.woodfish-hotspot.is-striking::after {
+  animation: woodfish-impact 720ms ease-out both;
+}
+
+.woodfish-hotspot.is-striking::after {
+  animation-delay: 130ms;
+}
+
+.woodfish-hotspot.is-striking .hotspot-icon {
+  animation: woodfish-hit 135ms ease-in-out infinite alternate;
+  transform-origin: 50% 80%;
+}
+
+.bell-hotspot.is-ringing {
+  border-color: #fff0a0;
+  box-shadow: 0 0 24px rgba(255, 222, 105, 0.95), inset 0 0 12px rgba(255, 222, 105, 0.35);
+}
+
+.bell-hotspot.is-ringing::before,
+.bell-hotspot.is-ringing::after {
+  animation: bell-sound-wave 1.3s ease-out infinite;
+}
+
+.bell-hotspot.is-ringing::after {
+  animation-delay: 650ms;
+}
+
+.bell-hotspot.is-ringing .hotspot-icon {
+  animation: bell-sway 260ms ease-in-out infinite alternate;
+  transform-origin: 50% 10%;
+}
+
+@keyframes woodfish-hit {
+  from { transform: rotate(-15deg) translateY(1px) scale(0.94); }
+  to { transform: rotate(12deg) translateY(-2px) scale(1.08); }
+}
+
+@keyframes woodfish-impact {
+  0% { opacity: 0.9; transform: scale(0.65); }
+  100% { opacity: 0; transform: scale(1.55); }
+}
+
+@keyframes bell-sway {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(14deg); }
+}
+
+@keyframes bell-sound-wave {
+  0% { opacity: 0.85; transform: scale(0.85); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
 .bell-hotspot {
   top: 955px;
   left: 34px;
@@ -379,12 +478,658 @@ body.obs-mode .stage-wrapper {
 }
 
 /* ==========================================================================
-   4. NHÂN VẬT PHẬT TỬ ÁO LAM QUỲ LỄ (SHADOW ĐÃ BAKE SẴN VÀO PNG, 0% CPU FILTER)
+   4. NHÂN VẬT CHÚ TIỂU / NI CÔ DỰNG 3D BẰNG CSS
    ========================================================================== */
-.devotee-sprite {
+.monastic-character {
+  --robe-light: #aaa59a;
+  --robe-mid: #77766f;
+  --robe-dark: #4b4c49;
+  position: relative;
+  flex: none;
+  width: 92px;
+  height: 128px;
+  perspective: 700px;
+  transform-style: preserve-3d;
+}
+
+.monastic-figure,
+.monastic-figure > span {
+  position: absolute;
   display: block;
-  object-fit: contain;
-  transform-origin: bottom center;
+}
+
+.monastic-figure {
+  left: 50%;
+  bottom: 3px;
+  width: 78px;
+  height: 118px;
+  transform: translateX(-50%);
+  transform-origin: 50% 94%;
+  transform-style: preserve-3d;
+  transition: transform 180ms ease;
+  translate: 0 0;
+  animation: monastic-idle 3.2s ease-in-out infinite;
+  animation-delay: var(--idle-delay, 0s);
+}
+
+.monastic-shadow {
+  left: 7px;
+  bottom: 0;
+  width: 64px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(18, 7, 3, 0.72), transparent 72%);
+  transform: rotateX(58deg);
+}
+
+.monastic-head {
+  z-index: 4;
+  top: 4px;
+  left: 50%;
+  width: 27px;
+  height: 31px;
+  border: 1px solid rgba(112, 69, 49, 0.48);
+  border-radius: 48% 48% 45% 45%;
+  background: linear-gradient(110deg, #9d7059 0%, #e0b89b 34%, #c99778 72%, #815844 100%);
+  box-shadow: inset 3px 1px 4px rgba(255, 231, 205, 0.44), inset -3px -3px 5px rgba(79, 47, 34, 0.24), 1px 3px 5px rgba(29, 13, 7, 0.3);
+  transform: translateX(-50%) rotateY(-8deg);
+}
+
+.monastic-hair {
+  display: none;
+}
+
+.monastic-face {
+  position: absolute;
+  inset: 0;
+}
+
+.monastic-eye {
+  position: absolute;
+  top: 15px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #39251d;
+}
+
+.monastic-eye-left { left: 7px; }
+.monastic-eye-right { right: 7px; }
+
+.monastic-nose {
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  width: 3px;
+  height: 5px;
+  border-right: 1px solid rgba(121, 71, 50, 0.55);
+  border-radius: 50%;
+}
+
+.monastic-neck {
+  z-index: 2;
+  left: 50%;
+  top: 30px;
+  width: 12px;
+  height: 14px;
+  background: linear-gradient(90deg, #9e725b, #d5a284 55%, #a87960);
+  transform: translateX(-50%);
+}
+
+.monastic-robe {
+  z-index: 2;
+  top: 39px;
+  left: 50%;
+  width: 61px;
+  height: 69px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 232, 179, 0.3);
+  border-radius: 42% 42% 20% 20% / 24% 24% 12% 12%;
+  background: linear-gradient(100deg, var(--robe-dark) 0%, var(--robe-mid) 25%, var(--robe-light) 49%, var(--robe-mid) 69%, var(--robe-dark) 100%);
+  box-shadow: inset 5px 0 7px rgba(255, 255, 255, 0.16), inset -7px 0 8px rgba(14, 8, 5, 0.28), 0 5px 8px rgba(20, 8, 4, 0.26);
+  transform: translateX(-50%);
+  transform-origin: center top;
+}
+
+.monastic-robe::before {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 18px;
+  height: 47px;
+  content: '';
+  border-left: 1px solid rgba(255, 236, 199, 0.46);
+  border-right: 1px solid rgba(45, 28, 17, 0.18);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), transparent 45%, rgba(32, 18, 12, 0.16));
+  transform: translateX(-50%) rotate(5deg);
+}
+
+.monastic-fold {
+  position: absolute;
+  bottom: 4px;
+  width: 2px;
+  height: 39px;
+  border-radius: 50%;
+  background: rgba(37, 26, 19, 0.3);
+}
+
+.monastic-fold-left { left: 17px; transform: rotate(9deg); }
+.monastic-fold-right { right: 16px; transform: rotate(-8deg); }
+
+.monastic-sash {
+  position: absolute;
+  z-index: 1;
+  top: 5px;
+  left: 50%;
+  width: 6px;
+  height: 48px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(255, 233, 178, 0.18), rgba(221, 185, 112, 0.72), rgba(93, 61, 31, 0.22));
+  transform: translateX(-50%) rotate(-18deg);
+}
+
+.monastic-sleeve {
+  z-index: 3;
+  top: 43px;
+  width: 25px;
+  height: 43px;
+  border: 1px solid rgba(255, 232, 179, 0.24);
+  border-radius: 55% 45% 42% 46%;
+  background: linear-gradient(110deg, var(--robe-dark), var(--robe-light) 48%, var(--robe-mid));
+  box-shadow: inset 3px 1px 4px rgba(255, 255, 255, 0.18), 1px 3px 5px rgba(20, 8, 4, 0.24);
+  transform-origin: 50% 15%;
+}
+
+.monastic-sleeve-left {
+  left: 5px;
+  transform: rotate(27deg);
+}
+
+.monastic-sleeve-right {
+  right: 5px;
+  transform: rotate(-27deg);
+}
+
+.monastic-hand {
+  z-index: 4;
+  top: 64px;
+  left: 50%;
+  width: 11px;
+  height: 22px;
+  border: 1px solid rgba(112, 69, 49, 0.42);
+  border-radius: 48% 48% 42% 42%;
+  background: linear-gradient(90deg, #9d7059, #e0b89b 48%, #b8876b);
+  box-shadow: inset 1px 1px 2px rgba(255, 238, 216, 0.5);
+  transform: translateX(-50%);
+}
+
+.monastic-leg {
+  z-index: 1;
+  bottom: 5px;
+  width: 19px;
+  height: 13px;
+  border-radius: 45% 45% 35% 35%;
+  background: linear-gradient(180deg, var(--robe-mid), var(--robe-dark));
+}
+
+.monastic-leg-left { left: 15px; transform: rotate(9deg); }
+.monastic-leg-right { right: 15px; transform: rotate(-9deg); }
+
+.monastic-character[data-order="nun"] {
+  --robe-light: #b7a99c;
+  --robe-mid: #81766d;
+  --robe-dark: #50443e;
+}
+
+.monastic-character[data-order="nun"] .monastic-robe {
+  width: 65px;
+  border-radius: 45% 45% 16% 16% / 24% 24% 9% 9%;
+}
+
+.monastic-character[data-order="nun"] .monastic-robe::after {
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  width: 55px;
+  height: 19px;
+  content: '';
+  border-bottom: 1px solid rgba(255, 232, 199, 0.3);
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(226, 211, 191, 0.82), rgba(91, 77, 65, 0.64));
+  transform: translateX(-50%) rotate(-7deg);
+}
+
+.monastic-character[data-order="nun"] .monastic-sash {
+  top: 0;
+  width: 17px;
+  height: 62px;
+  border-radius: 2px 2px 9px 9px;
+  background: linear-gradient(90deg, rgba(41, 32, 28, 0.54), rgba(216, 199, 177, 0.64), rgba(56, 42, 34, 0.46));
+  transform: translateX(-50%) rotate(-24deg);
+}
+
+.monastic-character[data-robe="earth"] {
+  --robe-light: #b49b79;
+  --robe-mid: #846c50;
+  --robe-dark: #4d3b2b;
+}
+
+.monastic-character[data-robe="ochre"] {
+  --robe-light: #c69a55;
+  --robe-mid: #956b34;
+  --robe-dark: #573b1d;
+}
+
+.monastic-character[data-robe="ash"] {
+  --robe-light: #b6b0a7;
+  --robe-mid: #817d78;
+  --robe-dark: #514e4a;
+}
+
+.monastic-character[data-robe="moss"] {
+  --robe-light: #9c9b78;
+  --robe-mid: #686a4b;
+  --robe-dark: #3e4430;
+}
+
+.monastic-character[data-pose="walk1"] .monastic-figure {
+  transform: translateX(-50%) rotateY(-7deg) scaleY(1.02);
+}
+
+.monastic-character[data-pose="walk2"] .monastic-figure {
+  transform: translateX(-50%) rotateY(7deg) scaleY(0.98);
+}
+
+.monastic-character[data-pose="walk1"] .monastic-leg-left,
+.monastic-character[data-pose="walk2"] .monastic-leg-right {
+  transform: translateY(3px) rotate(24deg);
+}
+
+.monastic-character[data-pose="walk1"] .monastic-leg-right,
+.monastic-character[data-pose="walk2"] .monastic-leg-left {
+  transform: translateY(-1px) rotate(-17deg);
+}
+
+.monastic-character[data-pose="walk1"] .monastic-sleeve-left,
+.monastic-character[data-pose="walk2"] .monastic-sleeve-right {
+  transform: rotate(43deg);
+}
+
+.monastic-character[data-pose="walk1"] .monastic-sleeve-right,
+.monastic-character[data-pose="walk2"] .monastic-sleeve-left {
+  transform: rotate(-43deg);
+}
+
+.monastic-character[data-pose="kneelDown"] .monastic-figure {
+  transform: translateX(-50%) scaleY(0.82) translateY(8px);
+}
+
+.monastic-character[data-pose="kneel"] .monastic-figure {
+  transform: translateX(-50%) scaleY(0.92) translateY(3px);
+}
+
+.monastic-character[data-pose="forehead"] .monastic-hand {
+  top: 49px;
+}
+
+.monastic-character[data-pose="bowMid"] .monastic-hand {
+  top: 69px;
+}
+
+.monastic-character[data-pose="forehead"] .monastic-figure,
+.monastic-character[data-pose="bowMid"] .monastic-figure {
+  transform: translateX(-50%) rotateX(22deg) scaleY(0.88) translateY(3px);
+}
+
+.monastic-character[data-pose="prostrate"] .monastic-figure {
+  transform: translateX(-50%) rotateX(38deg) scaleY(0.78) translateY(7px);
+}
+
+.monastic-character[data-pose="prostrateDeep"] .monastic-figure {
+  transform: translateX(-50%) rotateX(54deg) scaleY(0.68) translateY(10px);
+}
+
+@keyframes monastic-idle {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -2px; }
+}
+
+.monastic-character {
+  perspective: none;
+  transform-style: flat;
+}
+
+.spirit-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 88%;
+}
+
+.spirit-pose {
+  display: none;
+}
+
+.monastic-character[data-pose="walk1"] .spirit-standing,
+.monastic-character[data-pose="walk2"] .spirit-standing {
+  display: initial;
+}
+
+.monastic-character[data-pose="kneelDown"] .spirit-kneeling,
+.monastic-character[data-pose="kneel"] .spirit-kneeling,
+.monastic-character[data-pose="forehead"] .spirit-kneeling {
+  display: initial;
+}
+
+.monastic-character[data-pose="bowMid"] .spirit-bowing {
+  display: initial;
+}
+
+.monastic-character[data-pose="prostrate"] .spirit-prostrate,
+.monastic-character[data-pose="prostrateDeep"] .spirit-prostrate {
+  display: initial;
+}
+
+.spirit-tail,
+.spirit-robe {
+  stroke: rgba(235, 255, 246, 0.88);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.spirit-tail {
+  opacity: 0.72;
+}
+
+.spirit-robe {
+  opacity: 0.96;
+}
+
+.spirit-robe-line,
+.spirit-trim {
+  fill: none;
+  stroke: rgba(255, 239, 191, 0.78);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.spirit-robe-line {
+  opacity: 0.68;
+}
+
+.spirit-sleeve {
+  fill: none;
+  stroke: rgba(241, 255, 248, 0.9);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.spirit-head {
+  stroke: rgba(242, 255, 249, 0.96);
+  stroke-width: 2;
+}
+
+.ghost-veil {
+  display: none;
+  fill: rgba(190, 177, 219, 0.92);
+  stroke: rgba(247, 239, 255, 0.96);
+  stroke-width: 2;
+}
+
+.monastic-character[data-order="nun"] .ghost-veil {
+  display: initial;
+}
+
+.monastic-character[data-order="nun"] .spirit-robe-line,
+.monastic-character[data-order="nun"] .spirit-trim {
+  stroke: rgba(224, 207, 246, 0.92);
+}
+
+.ghost-eye,
+.ghost-mouth {
+  fill: none;
+  stroke: #594338;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.ghost-cheek {
+  fill: none;
+  stroke: rgba(208, 112, 119, 0.62);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spirit-hands {
+  fill: #e8cdb2;
+  stroke: #fff0dc;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.spirit-bead {
+  fill: #ead29a;
+  stroke: #fff0c8;
+  stroke-width: 1.5;
+}
+
+.spirit-ground {
+  fill: rgba(12, 8, 6, 0.48);
+}
+
+.prostrate-legs {
+  stroke: rgba(235, 255, 246, 0.88);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  opacity: 0.76;
+}
+
+.prostrate-folds {
+  opacity: 0.82;
+}
+
+.prostrate-contact {
+  fill: none;
+  stroke: rgba(235, 255, 246, 0.82);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.prostrate-arms {
+  stroke-width: 9;
+}
+
+.prostrate-head {
+  transform: rotate(12deg);
+  transform-origin: 60px 95px;
+}
+
+.prostrate-veil {
+  transform: rotate(12deg);
+  transform-origin: 60px 95px;
+}
+
+.prostrate-eye {
+  stroke: #594338;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.prostrate-palms {
+  stroke-width: 1.5;
+}
+
+.merit-halo-pos {
+  display: none;
+  pointer-events: none;
+}
+
+.merit-halo-ring {
+  display: none;
+  fill: none;
+}
+
+.monastic-character[data-halo-rings]:not([data-halo-rings="0"]) .merit-halo-ring {
+  stroke: currentColor;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2px currentColor);
+  animation: merit-halo-breathe 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.monastic-character[data-halo-rings]:not([data-halo-rings="0"]) .merit-halo-ring-1 {
+  stroke-width: 2;
+  animation-delay: -0.8s;
+}
+
+.monastic-character[data-halo-rings]:not([data-halo-rings="0"]) .merit-halo-ring-2 {
+  stroke-width: 1.7;
+  animation-delay: -0.4s;
+}
+
+.monastic-character[data-halo-rings]:not([data-halo-rings="0"]) .merit-halo-ring-3 {
+  stroke-width: 1.4;
+}
+
+.monastic-character[data-halo-rings="1"] .merit-halo-ring-1,
+.monastic-character[data-halo-rings="2"] .merit-halo-ring-1,
+.monastic-character[data-halo-rings="2"] .merit-halo-ring-2,
+.monastic-character[data-halo-rings="3"] .merit-halo-ring {
+  display: initial;
+}
+
+.merit-halo-sparkle {
+  display: none;
+  fill: currentColor;
+  filter: drop-shadow(0 0 3px currentColor);
+  animation: merit-halo-twinkle 1.8s ease-in-out infinite;
+}
+
+.monastic-character[data-halo-rings]:not([data-halo-rings="0"]) .merit-halo-sparkle {
+  display: initial;
+}
+
+.merit-halo-sparkle.sparkle-b {
+  animation-delay: -0.9s;
+}
+
+.monastic-character[data-halo-tier="0"] { color: #ffe28a; }
+.monastic-character[data-halo-tier="1"] { color: #8df4ef; }
+.monastic-character[data-halo-tier="2"] { color: #d3a6ff; }
+.monastic-character[data-halo-tier="3"] { color: #ff9fca; }
+.monastic-character[data-halo-tier="4"] { color: #a7f5a1; }
+
+.merit-halo-badge {
+  align-self: center;
+  margin-top: 2px;
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(15, 7, 4, 0.88);
+  color: #ffe28a;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-shadow: 0 0 6px currentColor;
+}
+
+.vip-devotee-slot[data-halo-tier="1"] .merit-halo-badge { color: #8df4ef; }
+.vip-devotee-slot[data-halo-tier="2"] .merit-halo-badge { color: #d3a6ff; }
+.vip-devotee-slot[data-halo-tier="3"] .merit-halo-badge { color: #ff9fca; }
+.vip-devotee-slot[data-halo-tier="4"] .merit-halo-badge { color: #a7f5a1; }
+
+.merit-breakthrough .merit-halo-ring {
+  animation-duration: 700ms;
+  animation-iteration-count: 3;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.merit-breakthrough .merit-halo-sparkle {
+  animation-duration: 550ms;
+  animation-iteration-count: 3;
+}
+
+@keyframes merit-halo-breathe {
+  0%, 100% { opacity: 0.68; scale: 0.98; }
+  50% { opacity: 1; scale: 1.04; }
+}
+
+@keyframes merit-halo-twinkle {
+  0%, 100% { opacity: 0.2; scale: 0.65; }
+  45% { opacity: 1; scale: 1.25; }
+  65% { opacity: 0.55; scale: 0.9; }
+}
+
+.monastic-character[data-pose="walk1"] .merit-halo-upright,
+.monastic-character[data-pose="walk2"] .merit-halo-upright,
+.monastic-character[data-pose="kneelDown"] .merit-halo-upright,
+.monastic-character[data-pose="kneel"] .merit-halo-upright,
+.monastic-character[data-pose="forehead"] .merit-halo-upright {
+  display: initial;
+}
+
+.monastic-character[data-pose="bowMid"] .merit-halo-bowing {
+  display: initial;
+}
+
+.monastic-character[data-pose="prostrate"] .merit-halo-prostrate,
+.monastic-character[data-pose="prostrateDeep"] .merit-halo-prostrate {
+  display: initial;
+}
+
+.monastic-character[data-pose="kneel"] .spirit-art {
+  animation: ghost-hover 3s ease-in-out infinite;
+}
+
+.monastic-character[data-pose="walk1"] .spirit-art {
+  animation: ghost-step-a 360ms ease-in-out infinite alternate;
+}
+
+.monastic-character[data-pose="walk2"] .spirit-art {
+  animation: ghost-step-b 360ms ease-in-out infinite alternate;
+}
+
+.monastic-character[data-pose="kneelDown"] .spirit-kneeling {
+  transform: translateY(5px) scaleY(0.94);
+  transform-origin: 50% 50%;
+}
+
+.monastic-character[data-pose="forehead"] .spirit-hands {
+  transform: translateY(-14px);
+}
+
+.monastic-character[data-pose="bowMid"] .spirit-art {
+  transform: translateY(4px) scaleY(0.96);
+}
+
+.monastic-character[data-pose="prostrate"] .spirit-art {
+  transform: translateY(4px) scaleY(0.97);
+}
+
+.monastic-character[data-pose="prostrateDeep"] .spirit-art {
+  transform: translateY(7px) scaleY(0.94);
+}
+
+.monastic-character[data-pose="prostrateDeep"] .spirit-ground {
+  opacity: 0.9;
+}
+
+@keyframes ghost-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes ghost-step-a {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes ghost-step-b {
+  from { transform: translateY(-3px) rotate(2deg); }
+  to { transform: translateY(0) rotate(-2deg); }
 }
 
 /* Chủ lễ đang hành lễ ngay chính giữa trước lư hương đồng */
@@ -420,25 +1165,14 @@ body.obs-mode .stage-wrapper {
   height: 176px;
 }
 
-.pose-frame {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 126px;
-  height: 162px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pose-frame[data-pose="walk1"],
-.pose-frame[data-pose="walk2"] {
-  width: 102px;
+.central-sprite-stack .monastic-character {
+  width: 132px;
   height: 176px;
 }
 
-.pose-frame.active {
-  opacity: 1;
+.central-sprite-stack .monastic-figure {
+  bottom: 5px;
+  scale: 1.3;
 }
 
 .worshipper-wish-bubble {
@@ -518,7 +1252,7 @@ body.obs-mode .stage-wrapper {
   color: var(--gold-bright);
 }
 
-/* 5. HÀNG 6 ĐỆM QUỲ VIP TRÊN BỤC GỖ (STATIC LAYER, 0% CPU KHI ĐỨNG YÊN) */
+/* 5. HÀNG 6 ĐỆM QUỲ VIP TRÊN BỤC GỖ */
 .vip-cushions-layer {
   position: absolute;
   inset: 0;
@@ -535,9 +1269,13 @@ body.obs-mode .stage-wrapper {
   align-items: center;
 }
 
-.vip-devotee-slot .devotee-sprite {
+.vip-devotee-slot .monastic-character {
   width: 102px;
-  height: 132px;
+  height: 136px;
+}
+
+.vip-devotee-slot .monastic-figure {
+  scale: 1.08;
 }
 
 .vip-rank-pill {
@@ -574,7 +1312,7 @@ body.obs-mode .stage-wrapper {
   text-overflow: ellipsis;
 }
 
-/* 6. ĐẠO TRÀNG NGƯỜI XEM QUỲ LỄ HAI BÊN THẢM ĐỎ (40 CHỖ NGỒI TĨNH SIÊU NHẸ CPU) */
+/* 6. ĐẠO TRÀNG NGƯỜI XEM QUỲ LỄ HAI BÊN THẢM ĐỎ */
 .congregation-hall {
   position: absolute;
   inset: 0;
@@ -590,9 +1328,13 @@ body.obs-mode .stage-wrapper {
   align-items: center;
 }
 
-.hall-seat .devotee-sprite {
+.hall-seat .monastic-character {
   width: 92px;
   height: 120px;
+}
+
+.hall-seat .monastic-figure {
+  scale: 0.94;
 }
 
 .seat-badge {
@@ -686,7 +1428,7 @@ body.obs-mode .stage-wrapper {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 16;
+  z-index: 30;
   overflow: hidden;
 }
 
@@ -703,7 +1445,7 @@ body.obs-mode .stage-wrapper {
   animation: floatLanternUp 9.5s linear forwards;
 }
 .sky-lantern::before {
-  content: '🏮 SỚ CẦU AN';
+  content: 'CẦU AN';
   display: block;
   font-size: 13px;
   font-weight: 800;
@@ -711,6 +1453,22 @@ body.obs-mode .stage-wrapper {
   letter-spacing: 1.2px;
   margin-bottom: 3px;
 }
+.sky-lantern-icon {
+  display: block;
+  margin: -4px 0 2px;
+  font-size: 76px;
+  line-height: 1;
+  text-align: center;
+  filter: drop-shadow(0 0 16px rgba(255, 190, 55, 1));
+  transform-origin: 50% 12%;
+  animation: lantern-sway 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes lantern-sway {
+  from { transform: rotate(-7deg); }
+  to { transform: rotate(7deg); }
+}
+
 .sky-lantern-user {
   font-size: 17px;
   font-weight: 800;
@@ -724,8 +1482,8 @@ body.obs-mode .stage-wrapper {
 }
 
 @keyframes floatLanternUp {
-  0% { transform: translate3d(0, 60px, 0) scale(0.85); opacity: 0; }
-  12% { transform: translate3d(0, 0px, 0) scale(1); opacity: 1; }
+  0% { transform: translate3d(0, 30px, 0) scale(0.85); opacity: 0.25; }
+  5% { transform: translate3d(0, 0px, 0) scale(1); opacity: 1; }
   86% { opacity: 0.95; }
   100% { transform: translate3d(0, -1180px, 0) scale(0.92); opacity: 0; }
 }
@@ -1119,4 +1877,364 @@ body.obs-mode .stage-wrapper {
   background: rgba(255, 255, 255, 0.04);
   border-left: 3px solid var(--gold-main);
   color: #f3e5cf;
+}
+.rpc-feedback {
+  min-height: 20px;
+  color: var(--muted-gold);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.rpc-feedback[data-state="pending"] { color: #ffe694; }
+.rpc-feedback[data-state="success"] { color: #9ee5b8; }
+.rpc-feedback[data-state="error"] { color: #ffaaa0; }
+
+/* Son lacquer, aged wood, celadon and handmade paper. */
+:root {
+  --bg-deep: #101714;
+  --gold-bright: #ead9ad;
+  --gold-main: #ae8b56;
+  --gold-deep: #68523a;
+  --ivory: #eee5d2;
+  --muted-gold: #b6aa8e;
+  --lacquer: #321b16;
+  --jade: #536f5c;
+  --paper: #d8c8a6;
+}
+
+html, body {
+  background-color: #111915;
+  color: var(--ivory);
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse at 18% 44%, rgba(52, 83, 66, 0.22), transparent 42%),
+    radial-gradient(ellipse at 84% 65%, rgba(117, 64, 34, 0.18), transparent 45%),
+    linear-gradient(125deg, #121b17, #17110e 52%, #20140f);
+}
+
+.app-workspace {
+  position: relative;
+  isolation: isolate;
+  gap: 30px;
+}
+
+.stage-wrapper {
+  border: 1px solid rgba(202, 166, 101, 0.72);
+  border-radius: 5px;
+  background: #21160f;
+  box-shadow:
+    0 0 0 5px rgba(35, 22, 15, 0.96),
+    0 0 0 6px rgba(163, 119, 62, 0.56),
+    0 24px 70px rgba(0, 0, 0, 0.58);
+}
+
+.stage-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  border: 1px solid rgba(238, 216, 165, 0.68);
+  box-shadow:
+    inset 0 0 0 5px rgba(37, 20, 13, 0.42),
+    inset 0 0 0 7px rgba(180, 138, 72, 0.44);
+}
+
+body.obs-mode .stage-wrapper::before {
+  border-color: rgba(238, 216, 165, 0.4);
+  box-shadow: inset 0 0 0 3px rgba(37, 20, 13, 0.22);
+}
+
+.sanctuary-bg-img {
+  filter: saturate(0.82) contrast(1.04) brightness(0.91);
+}
+
+.stage-9x16::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 17;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(10, 14, 12, 0.28), transparent 18%, transparent 68%, rgba(12, 13, 11, 0.36)),
+    linear-gradient(90deg, rgba(12, 16, 13, 0.22), transparent 13%, transparent 87%, rgba(12, 16, 13, 0.22));
+}
+
+.buddha-halo-system { opacity: 0.58; }
+.halo-pulse-ring { border-color: rgba(219, 205, 157, 0.34); }
+.halo-pulse-ring.ring-2 { border-color: rgba(109, 142, 113, 0.32); }
+.lotus-hand-halo { opacity: 0.62; }
+
+.minimal-top-bar {
+  top: 24px;
+  left: 30px;
+  right: 30px;
+}
+
+.live-pill, .mini-stat-pill, .tts-voice-pill {
+  border: 1px solid rgba(221, 197, 145, 0.58);
+  border-radius: 3px;
+  background: rgba(22, 26, 21, 0.82);
+  color: #f0e5cc;
+  font-family: 'Noto Serif', serif;
+  letter-spacing: 0;
+}
+
+.live-dot.connected { background: #7ca47d; }
+.live-dot { background: #bc675b; }
+
+.ritual-hotspot {
+  padding: 8px 13px;
+  border: 1px solid rgba(222, 197, 143, 0.62);
+  border-radius: 3px;
+  background: rgba(25, 30, 25, 0.82);
+  color: #eadbb7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24);
+}
+
+.worshipper-wish-bubble {
+  border: 1px solid rgba(219, 199, 157, 0.75);
+  border-radius: 3px;
+  background: rgba(32, 25, 19, 0.88);
+  color: #f0e4c9;
+  font-family: 'Noto Serif', serif;
+}
+
+.name-tag, .vip-rank-pill, .seat-badge {
+  border-radius: 3px;
+  border-color: rgba(210, 183, 128, 0.78);
+  background: rgba(27, 29, 24, 0.9);
+}
+
+.tag-avatar, .seat-avatar {
+  border-color: #c9b17d;
+  background: #3e5548;
+  color: #f0e5c9;
+}
+
+.tag-name, .seat-username, .vip-rank-name { color: #f0e8d8; }
+.tag-sub { color: #d4c49d; }
+.vip-rank-num { background: #c3a263; }
+
+.bottom-hud-bar {
+  bottom: 28px;
+  left: 30px;
+  right: 30px;
+  height: 174px;
+  gap: 12px;
+}
+
+.hud-active-notice {
+  height: 48px;
+  border: 1px solid rgba(205, 185, 140, 0.56);
+  border-left: 4px solid #72896c;
+  border-radius: 3px;
+  background: rgba(24, 31, 26, 0.9);
+  color: #efe4c9;
+  font-family: 'Noto Serif', serif;
+}
+
+.hud-gift-card, .hud-right-leaderboard {
+  border: 1px solid rgba(207, 183, 132, 0.58);
+  border-radius: 3px;
+  background: rgba(28, 27, 22, 0.93);
+}
+
+.hud-gift-card { border-top: 3px solid #8a4332; }
+.hud-gift-card:hover { border-color: #ddc69a; }
+.gift-coin-tag { color: #c4b897; }
+.gift-title { color: #eadbb6; }
+.hud-right-leaderboard { border-top: 3px solid #647c65; }
+.hud-lb-header { color: #e7d8b3; }
+.leader-rank { border-color: #b89a64; background: rgba(99, 119, 91, 0.52); }
+.leader-merit { color: #e0cfaa; }
+
+.sky-lantern {
+  border: 1px solid #bca77e;
+  border-radius: 3px;
+  background: rgba(43, 35, 25, 0.94);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.fortune-modal-overlay { background: rgba(10, 15, 12, 0.78); }
+.fortune-scroll-card {
+  border: 5px solid #533024;
+  outline: 1px solid #b6985b;
+  border-radius: 3px;
+  background: #e4d7b8;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.56);
+}
+.fortune-badge { border-radius: 2px; background: #6b3027; }
+.fortune-heading { color: #3a3225; }
+.fortune-poem { color: #352f24; border-color: rgba(80, 57, 39, 0.3); }
+
+.grand-ceremony-banner {
+  border: 2px solid #d5bd85;
+  border-radius: 3px;
+  background: linear-gradient(135deg, rgba(76, 35, 25, 0.98), rgba(44, 32, 23, 0.98));
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.5);
+}
+.grand-title { color: #ead9ad; }
+.grand-sub { color: #e8e1d1; }
+
+.quick-dock {
+  width: 410px;
+  padding: 22px 23px;
+  border: 1px solid rgba(195, 164, 111, 0.72);
+  border-radius: 4px;
+  background-color: #211a14;
+  background-image:
+    repeating-linear-gradient(91deg, rgba(185, 139, 77, 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(145deg, rgba(56, 44, 31, 0.72), rgba(20, 27, 22, 0.96) 58%, rgba(46, 27, 20, 0.96));
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.38), inset 0 0 0 5px rgba(8, 12, 10, 0.28);
+  scrollbar-color: #83704f #1b1a15;
+}
+
+.dock-header {
+  border-bottom: 1px solid rgba(202, 179, 132, 0.35);
+  padding-bottom: 15px;
+}
+
+.dock-title {
+  color: #eadbb8;
+  font-family: 'Noto Serif', serif;
+  font-size: 19px;
+}
+
+.dock-link {
+  border-color: rgba(199, 177, 132, 0.52);
+  border-radius: 2px;
+  color: #d8c69f;
+}
+
+.dock-section {
+  gap: 11px;
+  padding: 14px 2px;
+  border: 0;
+  border-bottom: 1px solid rgba(203, 181, 136, 0.25);
+  border-radius: 0;
+  background: transparent;
+}
+
+.dock-section-title {
+  color: #c9b98f;
+  font-family: 'Noto Serif', serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.dock-input {
+  border: 1px solid rgba(171, 153, 113, 0.52);
+  border-radius: 2px;
+  background: rgba(13, 20, 17, 0.82);
+  color: #f0e8d9;
+}
+
+.dock-input:focus-visible, .dock-btn:focus-visible, .dock-link:focus-visible {
+  outline: 2px solid #d8c28e;
+  outline-offset: 2px;
+}
+
+.dock-btn {
+  min-height: 40px;
+  border: 1px solid rgba(202, 174, 123, 0.5);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #513128, #33231c);
+  color: #eadfc9;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.dock-btn:hover {
+  border-color: #d3bd8e;
+  background: linear-gradient(180deg, #624334, #3c2a20);
+}
+
+.dock-btn.gold {
+  border-color: #c9ad72;
+  background: linear-gradient(180deg, #c0a66f, #9d7e4c);
+  color: #211b13;
+}
+
+.dock-btn.active-toggle {
+  border-color: #82977a;
+  background: linear-gradient(180deg, #536d59, #354b3c);
+  color: #f1eee0;
+}
+
+.rpc-feedback { color: #c8ba9a; }
+.rpc-feedback[data-state="pending"] { color: #e3c88e; }
+.rpc-feedback[data-state="success"] { color: #a9c4a4; }
+.rpc-feedback[data-state="error"] { color: #dc9f8c; }
+
+.event-feed-item {
+  border-radius: 2px;
+  border-left-color: #71876d;
+  background: rgba(224, 216, 192, 0.06);
+  color: #e1d9c8;
+}
+
+.tag-order {
+  color: #c8b68c;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body.obs-mode {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body:not(.obs-mode) .app-workspace {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 22px;
+    padding: 18px 14px 28px;
+  }
+
+  body:not(.obs-mode) .stage-wrapper {
+    width: min(calc(100vw - 28px), 56.25vh);
+    height: auto;
+    flex: none;
+  }
+
+  body:not(.obs-mode) .quick-dock {
+    width: min(100%, 620px);
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 480px) {
+  body:not(.obs-mode) .app-workspace { padding: 12px 10px 22px; }
+  body:not(.obs-mode) .stage-wrapper { width: min(calc(100vw - 20px), 56.25vh); }
+  body:not(.obs-mode) .quick-dock { padding: 17px 16px; }
+  .dock-title { font-size: 17px; }
+  .dock-link { max-width: 132px; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spirit-art {
+    animation: none;
+  }
+
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -86,21 +86,13 @@
           <div class="worshipper-wish-bubble" id="centralWishBubble">
             “Cầu gia đình bình an, vạn sự cát tường như ý”
           </div>
-          <div class="central-sprite-stack" id="centralSpriteStack">
-            <img src="/assets/devotee_walk.png" data-pose="walk1" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee_walk_2.png" data-pose="walk2" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee_kneel_down.png" data-pose="kneelDown" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee.png" data-pose="kneel" class="devotee-sprite pose-frame active" alt="" />
-            <img src="/assets/devotee_bow.png" data-pose="forehead" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee_bow_mid.png" data-pose="bowMid" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee_prostrate.png" data-pose="prostrate" class="devotee-sprite pose-frame" alt="" />
-            <img src="/assets/devotee_prostrate_deep.png" data-pose="prostrateDeep" class="devotee-sprite pose-frame" alt="" />
-          </div>
+          <div class="central-sprite-stack" id="centralSpriteStack" data-robe="earth" data-order="novice" data-pose="kneel"></div>
           <div class="name-tag central-name-tag">
             <div class="tag-avatar" id="centralAvatar">🙏</div>
             <div class="tag-texts">
               <div class="tag-name" id="centralName">Thí Chủ Minh Tâm</div>
               <div class="tag-sub" id="centralAction">✨ Dâng hương • +15 Công Đức</div>
+              <div class="tag-order" id="centralOrder">Ma chú tiểu</div>
             </div>
           </div>
         </div>
@@ -222,7 +214,7 @@
       <div class="dock-section">
         <div class="dock-section-title">📡 Kết Nối Phòng TikTok Live</div>
         <div class="dock-input-row">
-          <input type="text" id="inputTikTokUser" class="dock-input" value="@zenfacts_vn" placeholder="Nhập @username hoặc link TikTok Live..." />
+          <input type="text" id="inputTikTokUser" class="dock-input" placeholder="Nhập @username hoặc link TikTok Live..." />
           <button class="dock-btn gold" id="btnConnectTikTok">Kết Nối</button>
         </div>
         <button class="dock-btn" id="btnToggleAutoSim">
@@ -246,6 +238,7 @@
         <button class="dock-btn gold" id="btnRpcGrandCeremony">
           🐉 Đại Lễ Kim Long Chầu Phật (Quà Lớn)
         </button>
+        <p class="rpc-feedback" id="rpcFeedback" role="status" aria-live="polite">Sẵn sàng nhận lệnh.</p>
       </div>
 
       <div class="dock-section">

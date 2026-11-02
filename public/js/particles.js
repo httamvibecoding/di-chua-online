@@ -169,6 +169,43 @@ class TempleParticleEngine {
     }
   }
 
+  spawnLotusOffering(x = 540, y = 502) {
+    for (let i = 0; i < 14; i++) {
+      if (this.lotusPetals.length >= 90) break;
+      const angle = (Math.PI * 2 * i) / 14;
+      const petal = this.createLotusPetal();
+      Object.assign(petal, {
+        x,
+        y,
+        vx: Math.cos(angle) * (1.2 + Math.random() * 2.2),
+        vy: -2.2 - Math.random() * 2.8,
+        vrot: (Math.random() - 0.5) * 0.09,
+        scale: 0.8 + Math.random() * 0.65,
+        age: 0,
+        offering: true,
+        gold: i % 3 !== 0
+      });
+      this.lotusPetals.push(petal);
+    }
+
+    for (let i = 0; i < 22; i++) {
+      const angle = (Math.PI * 2 * i) / 22;
+      const speed = 2.5 + Math.random() * 4;
+      this.burstParticles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: 2 + Math.random() * 2.5,
+        alpha: 1,
+        decay: 0.025 + Math.random() * 0.02,
+        color: i % 3 === 0 ? '#fff3b0' : i % 3 === 1 ? '#ffcf5c' : '#f4a8c6'
+      });
+    }
+
+    this.spawnBellWave(x, y, 2);
+  }
+
   spawnFloatingMerit(text = '+1 Công Đức', x = 540, y = 940, color = '#ffe082') {
     if (this.floatingTexts.length > 8) this.floatingTexts.shift();
     this.floatingTexts.push({
@@ -249,6 +286,14 @@ class TempleParticleEngine {
     ctx.globalAlpha = 1;
     for (let i = this.lotusPetals.length - 1; i >= 0; i--) {
       const petal = this.lotusPetals[i];
+      if (petal.offering) {
+        petal.age += 1;
+        if (petal.age >= 120) {
+          this.lotusPetals.splice(i, 1);
+          continue;
+        }
+        petal.vy += 0.045;
+      }
       petal.y += petal.vy;
       petal.x += petal.vx + Math.sin(this.time + petal.swayPhase) * 0.7;
       petal.rot += petal.vrot;

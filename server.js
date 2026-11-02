@@ -8,6 +8,10 @@ const { WebSocketServer } = require('ws');
 const { TikTokLiveConnection, WebcastEvent, ControlEvent } = require('tiktok-live-connector');
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '127.0.0.1';
+const CORS_ORIGINS = new Set(
+  (process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean)
+);
 const DATA_DIR = path.join(__dirname, 'data');
 const TTS_CACHE_DIR = path.join(DATA_DIR, 'tts-cache');
 const STATE_FILE = path.join(DATA_DIR, 'merit-state.json');
@@ -269,7 +273,7 @@ const DEFAULT_STATE = {
   tiktok: {
     connected: false,
     connecting: false,
-    username: 'zenfacts_vn',
+    username: '',
     roomId: null,
     viewerCount: 0,
     lastError: null
@@ -589,7 +593,7 @@ const Rituals = {
       dragon: 'Đại Lễ Kim Long Chầu Phật'
     };
     const giftName = params.giftName || giftLabels[giftType];
-    const multiplier = coins >= 100 ? 50 : coins >= 10 ? 30 : 20;
+    const multiplier = coins >= 100 ? 50 : coins >= 5 ? 30 : 20;
     const merit = Math.max(20, coins * multiplier);
 
     state.offerings[giftType] = (state.offerings[giftType] || 0) + 1;
@@ -737,8 +741,9 @@ function parseViewerComment(commentText, user, uniqueId, avatar) {
     lower.includes('gieo que') ||
     lower.includes('rút quẻ') ||
     lower.includes('rut que') ||
-    lower.includes('quẻ') ||
-    lower.includes('que')
+    lower.includes('xin que') ||
+    lower.includes('que boi') ||
+    lower.includes('quẻ')
   ) {
     return Rituals.drawFortune({ user: cleanUser, uniqueId, avatar, topic: cleanWish });
   }
@@ -786,7 +791,7 @@ function parseViewerComment(commentText, user, uniqueId, avatar) {
     return Rituals.sendPrayer({ user: cleanUser, uniqueId, avatar, wish: cleanWish });
   }
 
-  return Rituals.burnIncense({ user: cleanUser, uniqueId, avatar, count: 1, wish: cleanWish });
+  return null;
 }
 
 const giftComboTracker = new Map();
@@ -1094,7 +1099,13 @@ async function handleRpcCall(method, params = {}) {
 // 8. EXPRESS + WEBSOCKET SERVER
 // ============================================================================
 const app = express();
-app.use(cors());
+if (CORS_ORIGINS.size > 0) {
+  app.use(cors({
+    origin(origin, callback) {
+      callback(null, !origin || CORS_ORIGINS.has(origin));
+    }
+  }));
+}
 app.use(express.json({ limit: '2mb' }));
 app.use('/tts-cache', express.static(TTS_CACHE_DIR, { maxAge: '7d' }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -1160,7 +1171,22 @@ function broadcastNotification(method, params) {
   }
 }
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
+  const origin = req.headers.origin;
+  const forwardedProtocol = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+  const requestProtocol = forwardedProtocol || (req.socket.encrypted ? 'https' : 'http');
+  let isSameOrigin = false;
+  if (origin) {
+    try {
+      const parsedOrigin = new URL(origin);
+      isSameOrigin = parsedOrigin.host === req.headers.host && parsedOrigin.protocol === `${requestProtocol}:`;
+    } catch (_) {}
+  }
+  if (CORS_ORIGINS.size > 0 && origin && !isSameOrigin && !CORS_ORIGINS.has(origin)) {
+    ws.close(1008, 'Origin is not allowed');
+    return;
+  }
+
   ws.send(
     JSON.stringify({
       jsonrpc: '2.0',
@@ -1204,7 +1230,7 @@ wss.on('connection', (ws) => {
 
 const zeroTts = new ZeroTTSManager();
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`============================================================`);
   console.log(`🪷 CHÙA ONLINE TIKTOK LIVE RPC ĐÃ KHỞI ĐỘNG`);
   console.log(`📺 Màn hình Live (9:16 OBS): http://localhost:${PORT}`);
@@ -1212,8 +1238,7 @@ server.listen(PORT, () => {
   console.log(`🔌 JSON-RPC 2.0 Endpoint   : http://localhost:${PORT}/rpc (ws://localhost:${PORT}/ws)`);
   console.log(`============================================================`);
 
-  // Tự động kết nối tới @zenfacts_vn ngay khi khởi động server
-  const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'zenfacts_vn';
+  const defaultChannel = process.env.TIKTOK_USER;
   if (defaultChannel) {
     connectTikTokLive(defaultChannel).catch((err) => {
       console.warn(`[Auto-Connect @${defaultChannel}] Chưa kết nối được ngay:`, err.message);
